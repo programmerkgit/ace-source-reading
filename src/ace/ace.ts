@@ -15,7 +15,9 @@ class Editor {
 }
 
 class Ace {
-    createEditSession(text: any, mode: any) {
+    /*  */
+    createEditSession(text: Document | string, mode: any): EditSession {
+        /* Edit sessionを作るとともに  undomanagerをセット。 */
         const doc = new EditSession(text, mode);
         doc.setUndoManager(new UndoManager());
         return doc;
@@ -54,5 +56,11 @@ class Ace {
             value = el.textContent || "";
             el.innerHTML = "";
         }
+
+        window.addEventListener("resize", () => {
+            /* TODO: env.onResize eidor.resize */
+        });
+        /* editor.ondestory, remove listnner of winwdow */
+        /* return Editor */
     }
 }
