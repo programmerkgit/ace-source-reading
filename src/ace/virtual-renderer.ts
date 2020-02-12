@@ -1,3 +1,6 @@
+import {Ace} from "../../ace";
+import EventEmitter = Ace.EventEmitter;
+
 type Theme = string;
 
 export class VirtualRenderer {
