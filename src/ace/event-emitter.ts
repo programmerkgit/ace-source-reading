@@ -10,7 +10,7 @@ export class EventEmitter {
         return this.eventRegistry[eventName];
     }
 
-    private safeGetDisabled(eventName: string) {
+    private safeGetDisabledDefaultHandlers(eventName: string): Callback[] {
         this.defaultHandlers.__disabled__[eventName] || (this.defaultHandlers.__disabled__[eventName] = []);
         return this.defaultHandlers.__disabled__[eventName];
     }
@@ -20,7 +20,7 @@ export class EventEmitter {
         if (handlers[eventName]) {
             /* 元々のデフォルトハンドラーをDisableに格納 */
             const oldHandler = handlers[eventName];
-            const disabled = this.safeGetDisabled(eventName);
+            const disabled = this.safeGetDisabledDefaultHandlers(eventName);
             disabled.push(oldHandler);
             /* disabledにcallbackが存在していたら削除 */
             const index = disabled.indexOf(callback);
