@@ -1,10 +1,12 @@
 import {Ace} from "../../ace";
-import EventEmitter = Ace.EventEmitter;
+import {EventEmitter} from "./event-emitter";
+
 
 type Theme = string;
 
-export class VirtualRenderer {
+export class VirtualRenderer extends EventEmitter {
     constructor(container?: Element, theme?: Theme) {
+        super();
         this.container = container || document.createElement("div");
         this.container.appendChild(this.gutter);
         this.container.appendChild(this.scroller);

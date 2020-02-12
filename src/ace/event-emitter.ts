@@ -1,4 +1,4 @@
-type Callback = (...args: any[]) => any
+type Callback = (e: {}) => any
 type DefaultHandlers = { __disabled__: { [key: string]: Callback[] } } & { [key: string]: Callback }
 
 export class EventEmitter {
@@ -10,12 +10,15 @@ export class EventEmitter {
         return this.eventRegistry[eventName];
     }
 
+    constructor() {
+    }
+
     private safeGetDisabledDefaultHandlers(eventName: string): Callback[] {
         this.defaultHandlers.__disabled__[eventName] || (this.defaultHandlers.__disabled__[eventName] = []);
         return this.defaultHandlers.__disabled__[eventName];
     }
 
-    setDefaultHandlers(eventName: string, callback: Callback) {
+    setDefaultHandlers(eventName: string, callback: Callback): EventEmitter {
         const handlers = this.defaultHandlers;
         if (handlers[eventName]) {
             /* 元々のデフォルトハンドラーをDisableに格納 */
@@ -29,10 +32,12 @@ export class EventEmitter {
             }
         }
         handlers[eventName] = callback;
+        return this;
     }
 
-    addListener(eventName: string, callback: Callback): void {
+    addListener(eventName: string, callback: Callback): EventEmitter {
         this.safeGetListeners(eventName).push(callback);
+        return this;
     }
 
     removeListener(eventName: string, callback: Callback): void {
@@ -44,17 +49,19 @@ export class EventEmitter {
 
     // event名を渡したらevent名のListenerを全て削除
     // event名を渡さない場合は全てのListenerを削除
-    removeAllListener(eventName?: string): void {
+    removeAllListener(eventName?: string): EventEmitter {
         if (eventName === null || eventName === undefined) {
             this.eventRegistry = {};
         } else {
             this.eventRegistry[eventName] = [];
         }
+        return this;
     }
 
-    emit(eventName: string, ...args: any[]) {
+    emit(eventName: string, e: {}): EventEmitter {
         (this.safeGetListeners(eventName)).forEach(callback => {
-            callback(...args);
+            callback(e);
         });
+        return this;
     }
 }
