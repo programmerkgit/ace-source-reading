@@ -42,6 +42,8 @@ export class EventEmitter {
         }
     }
 
+    // event名を渡したらevent名のListenerを全て削除
+    // event名を渡さない場合は全てのListenerを削除
     removeAllListener(eventName?: string): void {
         if (eventName === null || eventName === undefined) {
             this.eventRegistry = {};
