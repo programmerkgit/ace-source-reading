@@ -1,10 +1,9 @@
 /**
- * Represents a book.
+ * Represents a Editor.
  * @constructor
  */
-class VirtualRenderer {
-
-}
+import {Ace} from "../../ace";
+import VirtualRenderer = Ace.VirtualRenderer;
 
 export class Editor {
     id: string;
@@ -14,6 +13,7 @@ export class Editor {
         /* each editor should be unique */
         this.id = "editor" + ++Editor.$uid;
     }
+
     /*
        * var container = renderer.getContainerElement();
        this.commands = new CommandManager(useragent.isMac ? "mac" : "win", defaultCommands);

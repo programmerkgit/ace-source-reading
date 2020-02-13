@@ -1,2 +1,2 @@
 #!/bin/bash
-jsdoc -r dist
+typedoc --out out src

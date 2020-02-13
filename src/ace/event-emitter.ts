@@ -1,9 +1,9 @@
+/* https://jsdoc.app/index.html#block-tags */
+
 type Callback = (e: {}) => any
 type DefaultHandlers = { __disabled__: { [key: string]: Callback[] } } & { [key: string]: Callback }
 
-/**
-* represent EventEmitter
-* */
+/** Class representing a point. */
 export class EventEmitter {
     private eventRegistry: { [key: string]: Callback[] } = {};
     private defaultHandlers: DefaultHandlers = {__disabled__: {}} as DefaultHandlers;
@@ -12,7 +12,9 @@ export class EventEmitter {
         this.eventRegistry[eventName] || (this.eventRegistry[eventName] = []);
         return this.eventRegistry[eventName];
     }
-
+    /**
+     * constructor description
+     */
     constructor() {
     }
 
@@ -21,6 +23,11 @@ export class EventEmitter {
         return this.defaultHandlers.__disabled__[eventName];
     }
 
+    /**
+     * 特定のイベントが発生した時に呼ばれるデフォルトのハンドラー。イベント1種類につき一つのハンドラーが登録できる。
+     * @param{string} eventName - イベントの名前
+     * @param{Callback} callback - 実行されるハンドラ
+     * */
     setDefaultHandlers(eventName: string, callback: Callback): EventEmitter {
         const handlers = this.defaultHandlers;
         if (handlers[eventName]) {
@@ -37,8 +44,10 @@ export class EventEmitter {
         handlers[eventName] = callback;
         return this;
     }
+
     /**
      * add event listner
+     * @function
      * @param {string} eventName - name of event to listen to
      * @param {Callback} callback - function which is called when emitted event of eventName
      * */
@@ -47,6 +56,10 @@ export class EventEmitter {
         return this;
     }
 
+    /**
+     * Get the x value.
+     * @return {number} The x value.
+     */
     removeListener(eventName: string, callback: Callback): void {
         const index = (this.safeGetListeners(eventName)).indexOf(callback);
         if (0 < index) {

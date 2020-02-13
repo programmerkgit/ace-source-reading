@@ -1,4 +1,3 @@
-
 import {EventEmitter} from "./event-emitter";
 
 
@@ -6,14 +5,19 @@ type Theme = string;
 
 
 /**
- * Represents a Virtual Renderer.
- * @constructor
+ * VirtualRenderer renders everything you see on the screen.
  */
 export class VirtualRenderer extends EventEmitter {
+    /**
+     * @param container is a container of virtual renderer. if container is not specified, "div" element is a container
+     * @param theme - theme of virtual renderer??
+     * */
     constructor(container?: Element, theme?: Theme) {
         super();
         this.container = container || document.createElement("div");
+        /* gutter */
         this.container.appendChild(this.gutter);
+        /* scroll */
         this.container.appendChild(this.scroller);
         this.scroller.appendChild(this.content);
     }

@@ -15,7 +15,6 @@ class Editor {
 }
 
 class Ace {
-    /*  */
     createEditSession(text: Document | string, mode: any): EditSession {
         /* Edit sessionを作るとともに  undomanagerをセット。 */
         const doc = new EditSession(text, mode);
