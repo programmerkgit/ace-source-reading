@@ -2,8 +2,10 @@
  * Marker class
  * */
 export class Marker {
+    /**
+    * represent marker element
+    * */
     private readonly element: HTMLElement;
-
     /**
      * @param parentElement - marker is instantiated inside parent element.
      * */
