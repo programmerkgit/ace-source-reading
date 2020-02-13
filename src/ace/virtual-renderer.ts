@@ -1,9 +1,14 @@
-import {Ace} from "../../ace";
+
 import {EventEmitter} from "./event-emitter";
 
 
 type Theme = string;
 
+
+/**
+ * Represents a Virtual Renderer.
+ * @constructor
+ */
 export class VirtualRenderer extends EventEmitter {
     constructor(container?: Element, theme?: Theme) {
         super();

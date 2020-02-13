@@ -1,3 +1,7 @@
+/**
+ * Represents a book.
+ * @constructor
+ */
 class VirtualRenderer {
 
 }

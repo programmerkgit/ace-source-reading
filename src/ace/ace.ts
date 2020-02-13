@@ -37,7 +37,7 @@ class Ace {
             el = element;
         }
         /* todo check: it would be Editor's property ?? */
-        if ((el as any)?.env?.editor instanceof Editor) {
+        if ((el as any).env.editor instanceof Editor) {
 
         }
 

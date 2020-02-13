@@ -1,6 +1,9 @@
 type Callback = (e: {}) => any
 type DefaultHandlers = { __disabled__: { [key: string]: Callback[] } } & { [key: string]: Callback }
 
+/**
+* represent EventEmitter
+* */
 export class EventEmitter {
     private eventRegistry: { [key: string]: Callback[] } = {};
     private defaultHandlers: DefaultHandlers = {__disabled__: {}} as DefaultHandlers;
@@ -34,7 +37,11 @@ export class EventEmitter {
         handlers[eventName] = callback;
         return this;
     }
-
+    /**
+     * add event listner
+     * @param {string} eventName - name of event to listen to
+     * @param {Callback} callback - function which is called when emitted event of eventName
+     * */
     addListener(eventName: string, callback: Callback): EventEmitter {
         this.safeGetListeners(eventName).push(callback);
         return this;

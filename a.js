@@ -1,6 +1,6 @@
-A = function () {
-    this.d = 10;
+/**
+ * Represents a book.
+ * @constructor
+ */
+function Book(title, author) {
 }
-A.prototype.b = 3
-const a = new A()
-console.log(a, a.d, a.b, A.prototype, A)
