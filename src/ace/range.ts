@@ -28,8 +28,8 @@ export class Range {
     }
 
     toString(): string {
-        return ('Range: [' + this.start.row + '/' + this.start.column +
-            '] -> [' + this.end.row + '/' + this.end.column + ']');
+        return ("Range: [" + this.start.row + "/" + this.start.column +
+            "] -> [" + this.end.row + "/" + this.end.column + "]");
     };
 
     isEnd(column: number, row: number): boolean {
@@ -46,7 +46,7 @@ export class Range {
     setStart(row: number, column: number): void
 
     setStart(rowOrPoint: Point | number, column?: number) {
-        if (typeof rowOrPoint === 'number') {
+        if (typeof rowOrPoint === "number") {
             this.start.row = rowOrPoint;
             this.start.column = column!!;
         } else {
@@ -60,7 +60,7 @@ export class Range {
     setEnd(row: number, column: number): void
 
     setEnd(rowOrPoint: Point | number, column?: number) {
-        if (typeof rowOrPoint === 'number') {
+        if (typeof rowOrPoint === "number") {
             this.end.row = rowOrPoint;
             this.end.column = column!!;
         } else {
@@ -149,6 +149,21 @@ export class Range {
                 break;
         }
         return Range.fromPoints(start, end);
+    }
+
+    collapseRows(): Range {
+        /*
+                if (this.end.column == 0)
+                    return new Range(this.start.row, 0, Math.max(this.start.row, this.end.row-1), 0);
+        */
+        return new Range(this.start.row, 0, this.end.row, 0);
+    }
+
+    /**
+    * return cloned Range
+    * */
+    clone(): Range {
+        return Range.fromPoints(this.start, this.end);
     }
 
 }
