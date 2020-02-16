@@ -6,12 +6,11 @@ import {Ace} from "../../ace";
 import VirtualRenderer = Ace.VirtualRenderer;
 
 export class Editor {
-    id: string;
     static $uid = 0;
+    private id = "editor" + ++Editor.$uid;
 
     constructor(renderer: VirtualRenderer, session: EditSession) {
         /* each editor should be unique */
-        this.id = "editor" + ++Editor.$uid;
     }
 
     /*

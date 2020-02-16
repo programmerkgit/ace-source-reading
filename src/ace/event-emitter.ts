@@ -1,24 +1,26 @@
 /* https://jsdoc.app/index.html#block-tags */
 
-type Callback = (e: {}) => any
-type DefaultHandlers = { __disabled__: { [key: string]: Callback[] } } & { [key: string]: Callback }
+export type Event = any
+export type EventCallback = (e: Event) => any
+type DefaultHandlers = { __disabled__: { [key: string]: EventCallback[] } } & { [key: string]: EventCallback }
 
 /** Class representing a point. */
 export class EventEmitter {
-    private eventRegistry: { [key: string]: Callback[] } = {};
+    private eventRegistry: { [key: string]: EventCallback[] } = {};
     private defaultHandlers: DefaultHandlers = {__disabled__: {}} as DefaultHandlers;
 
-    private safeGetListeners(eventName: string): Callback[] {
+    private safeGetListeners(eventName: string): EventCallback[] {
         this.eventRegistry[eventName] || (this.eventRegistry[eventName] = []);
         return this.eventRegistry[eventName];
     }
+
     /**
      * constructor description
      */
     constructor() {
     }
 
-    private safeGetDisabledDefaultHandlers(eventName: string): Callback[] {
+    private safeGetDisabledDefaultHandlers(eventName: string): EventCallback[] {
         this.defaultHandlers.__disabled__[eventName] || (this.defaultHandlers.__disabled__[eventName] = []);
         return this.defaultHandlers.__disabled__[eventName];
     }
@@ -26,9 +28,9 @@ export class EventEmitter {
     /**
      * 特定のイベントが発生した時に呼ばれるデフォルトのハンドラー。イベント1種類につき一つのハンドラーが登録できる。
      * @param{string} eventName - イベントの名前
-     * @param{Callback} callback - 実行されるハンドラ
+     * @param{EventCallback} callback - 実行されるハンドラ
      * */
-    setDefaultHandlers(eventName: string, callback: Callback): EventEmitter {
+    setDefaultHandlers(eventName: string, callback: EventCallback): EventEmitter {
         const handlers = this.defaultHandlers;
         if (handlers[eventName]) {
             /* 元々のデフォルトハンドラーをDisableに格納 */
@@ -49,22 +51,36 @@ export class EventEmitter {
      * add event listner
      * @function
      * @param {string} eventName - name of event to listen to
-     * @param {Callback} callback - function which is called when emitted event of eventName
+     * @param {EventCallback} callback - function which is called when emitted event of eventName
      * */
-    addListener(eventName: string, callback: Callback): EventEmitter {
+    addEventListener(eventName: string, callback: EventCallback): EventEmitter {
         this.safeGetListeners(eventName).push(callback);
         return this;
+    }
+
+    /**
+     * alias for addEventListner
+     * */
+    on(eventName: string, callback: EventCallback): EventEmitter {
+        return this.addEventListener(eventName, callback);
     }
 
     /**
      * Get the x value.
      * @return {number} The x value.
      */
-    removeListener(eventName: string, callback: Callback): void {
+    removeListener(eventName: string, callback: EventCallback): void {
         const index = (this.safeGetListeners(eventName)).indexOf(callback);
         if (0 < index) {
             this.safeGetListeners(eventName).splice(index, 1);
         }
+    }
+
+    /**
+     * alias for removeListener
+     * */
+    off(eventName: string, callback: EventCallback): void {
+        return this.removeListener(eventName, callback);
     }
 
     // event名を渡したらevent名のListenerを全て削除
