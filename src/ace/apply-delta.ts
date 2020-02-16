@@ -1,6 +1,4 @@
-import { Delta } from './document';
-import { Ace } from '../../ace';
-import Point = Ace.Point;
+import { Delta, Point } from './document';
 
 
 export const applyDelta = function (docLines: string[], delta: Delta, doNotValidate: string): void {

@@ -1,7 +1,10 @@
 import { EventEmitter } from './event-emitter';
-import { Ace } from '../../ace';
 import { Range } from './range';
-import Point = Ace.Point;
+
+export type Point = {
+    row: number,
+    column: number
+}
 
 export type Delta = {
     action: 'insert',
