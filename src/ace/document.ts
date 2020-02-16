@@ -1,6 +1,17 @@
 import { EventEmitter } from './event-emitter';
 import { Ace } from '../../ace';
+import { Range } from './range';
 import Point = Ace.Point;
+
+export type Delta = {
+    action: 'insert',
+    lines: string[],
+    start: Point,
+} | {
+    action: 'remove',
+    start: Point,
+    end: Point
+}
 
 export class Document extends EventEmitter {
     private readonly lines = [ '' ];
@@ -50,6 +61,18 @@ export class Document extends EventEmitter {
         return index + pos.column;
     }
 
+    getLinesForRange(range: Range): string[] {
+        if (range.start.row === range.end.row) {
+            return [ this.getLine(range.start.row).substring(range.start.column, range.end.column) ];
+        } else {
+            const lines = this.getLines(range.start.row, range.end.row);
+            lines[ 0 ] = lines[ 0 ].substring(range.start.column);
+            const lastRow = lines.length - 1;
+            lines[ lastRow ] = lines[ lastRow ].substring(0, range.end.column);
+            return lines;
+        }
+    }
+
     getNewLineCharacter(): string {
         switch (this.newLineMode) {
             case 'windows':
@@ -73,25 +96,58 @@ export class Document extends EventEmitter {
     }
 
     insertFullLines(row: number, lines: string[]) {
-        // Clip to document.
-        // Allow one past the document end.
-        row = Math.min(Math.max(row, 0), this.getLength());
+        const row2 = Math.min(Math.max(0, row), this.getLength());
+        let column = 0;
+        if (row2 < this.getLength()) {
+            //   lines =
+        }
+    };
 
-        // Calculate insertion point.
-        var column = 0;
-        if (row < this.getLength()) {
-            // Insert before the specified row.
-            lines = lines.concat([ '' ]);
-            column = 0;
-        } else {
-            // Insert after the last row in the document.
-            lines = [ '' ].concat(lines);
-            row--;
-            column = this.lines[ row ].length;
+    insertMergedLines(position: Point, lines: string[]) {
+        const start = this.clippedPos(position.row, position.column);
+        const end = {
+            row: start.row + lines.length - 1,
+            column: (lines.length == 1 ? start.column : 0) + lines[ lines.length - 1 ].length
+        };
+    }
+
+
+    /**
+     * Applies `delta` to the document.
+     * @param delta - A delta object (can include "insert" and "remove" actions)
+     **/
+    applyDelta(delta: Delta, doNotValidate: any) {
+        var isInsert = delta.action == 'insert';
+        // An empty range is a NOOP.
+        if (isInsert ? delta.lines.length <= 1 && !delta.lines[ 0 ] : !Range.comparePoints(delta.start, delta.end)) {
+            return;
         }
 
-        // Insert.
-        this.insertMergedLines({row: row, column: column}, lines);
-    };
+        if (isInsert && delta.lines.length > 20000) {
+            this.splitAndapplyLargeDelta(delta, 20000);
+        } else {
+            applyDelta(this.$lines, delta, doNotValidate);
+            this.signal('change', delta);
+        }
+    }
+
+
+    /**
+     * point to lines
+     * [abc
+     *  edf
+     *  ghi]
+     * row 1, column 4 => 1, 3
+     * row 5, column 8 => 3, 3
+     * row 3, column 2 => 3, 2
+     * row 2, column 5 => 3, 5
+     * */
+    clippedPos(row: number, column: number): Point {
+        const length = this.getLength();
+        row = Math.min(Math.max(row, 0), this.getLength());
+        let line = this.getLine(row);
+        column = Math.min(Math.max(column, 0), line.length);
+        return {row, column};
+    }
 
 }
