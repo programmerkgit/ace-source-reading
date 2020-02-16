@@ -16,6 +16,10 @@ export class Range {
         };
     }
 
+    static fromPoints(start: Point, end: Point): Range {
+        return new Range(start.row, start.column, end.row, end.column);
+    }
+
     isEqual(range: Range): boolean {
         return this.start.column === range.start.column &&
             this.start.row === range.start.row &&
@@ -24,8 +28,8 @@ export class Range {
     }
 
     toString(): string {
-        return ("Range: [" + this.start.row + "/" + this.start.column +
-            "] -> [" + this.end.row + "/" + this.end.column + "]");
+        return ('Range: [' + this.start.row + '/' + this.start.column +
+            '] -> [' + this.end.row + '/' + this.end.column + ']');
     };
 
     isEnd(column: number, row: number): boolean {
@@ -38,9 +42,11 @@ export class Range {
     }
 
     setStart(point: Point): void
+
     setStart(row: number, column: number): void
+
     setStart(rowOrPoint: Point | number, column?: number) {
-        if (typeof rowOrPoint === "number") {
+        if (typeof rowOrPoint === 'number') {
             this.start.row = rowOrPoint;
             this.start.column = column!!;
         } else {
@@ -50,9 +56,11 @@ export class Range {
     }
 
     setEnd(point: Point): void
+
     setEnd(row: number, column: number): void
+
     setEnd(rowOrPoint: Point | number, column?: number) {
-        if (typeof rowOrPoint === "number") {
+        if (typeof rowOrPoint === 'number') {
             this.end.row = rowOrPoint;
             this.end.column = column!!;
         } else {
@@ -110,6 +118,13 @@ export class Range {
     }
 
     /**
+     * check if row, column pairs are within Range
+     * */
+    contains(row: number, column: number): boolean {
+        return this.compare(row, column) === 0;
+    }
+
+    /**
      *
      * return new rage extended
      * */
@@ -135,10 +150,5 @@ export class Range {
         }
         return Range.fromPoints(start, end);
     }
-
-    static fromPoints(start: Point, end: Point): Range {
-        return new Range(start.row, start.column, end.row, end.column);
-    }
-
 
 }

@@ -1,8 +1,8 @@
 /* https://jsdoc.app/index.html#block-tags */
 
 export type Event = any
-export type EventCallback = (e: Event) => any
-type DefaultHandlers = { __disabled__: { [key: string]: EventCallback[] } } & { [key: string]: EventCallback }
+export type EventCallback = (e?: Event) => any
+type DefaultHandlers = { __disabled__: { [ key: string ]: EventCallback[] } } & { [ key: string ]: EventCallback }
 
 /** Class representing a point. */
 export class EventEmitter {
@@ -12,23 +12,13 @@ export class EventEmitter {
      * key: event name value is eventlistners
      *
      * */
-    private eventRegistry: { [key: string]: EventCallback[] } = {};
+    private eventRegistry: { [ key: string ]: EventCallback[] } = {};
     private defaultHandlers: DefaultHandlers = {__disabled__: {}} as DefaultHandlers;
-
-    private safeGetListeners(eventName: string): EventCallback[] {
-        this.eventRegistry[eventName] || (this.eventRegistry[eventName] = []);
-        return this.eventRegistry[eventName];
-    }
 
     /**
      * constructor description
      */
     constructor() {
-    }
-
-    private safeGetDisabledDefaultHandlers(eventName: string): EventCallback[] {
-        this.defaultHandlers.__disabled__[eventName] || (this.defaultHandlers.__disabled__[eventName] = []);
-        return this.defaultHandlers.__disabled__[eventName];
     }
 
     /**
@@ -38,9 +28,9 @@ export class EventEmitter {
      * */
     setDefaultHandlers(eventName: string, callback: EventCallback): EventEmitter {
         const handlers = this.defaultHandlers;
-        if (handlers[eventName]) {
+        if (handlers[ eventName ]) {
             /* 元々のデフォルトハンドラーをDisableに格納 */
-            const oldHandler = handlers[eventName];
+            const oldHandler = handlers[ eventName ];
             const disabled = this.safeGetDisabledDefaultHandlers(eventName);
             disabled.push(oldHandler);
             /* disabledにcallbackが存在していたら削除 */
@@ -49,7 +39,7 @@ export class EventEmitter {
                 disabled.splice(index, 1);
             }
         }
-        handlers[eventName] = callback;
+        handlers[ eventName ] = callback;
         return this;
     }
 
@@ -89,13 +79,12 @@ export class EventEmitter {
         return this.removeListener(eventName, callback);
     }
 
-    // if eventName passed remove listeners of event name
     // otherwise remove all event listeners
     removeAllListener(eventName?: string): EventEmitter {
         if (eventName === null || eventName === undefined) {
             this.eventRegistry = {};
         } else {
-            this.eventRegistry[eventName] = [];
+            this.eventRegistry[ eventName ] = [];
         }
         return this;
     }
@@ -105,5 +94,25 @@ export class EventEmitter {
             callback(e);
         });
         return this;
+    }
+
+    // if eventName passed remove listeners of event name
+
+    signal(eventName: string, e?: Event) {
+        var listeners = this.safeGetListeners(eventName);
+        listeners = listeners.slice();
+        listeners.forEach(listener => {
+            listener(e);
+        });
+    };
+
+    private safeGetListeners(eventName: string): EventCallback[] {
+        this.eventRegistry[ eventName ] || (this.eventRegistry[ eventName ] = []);
+        return this.eventRegistry[ eventName ];
+    }
+
+    private safeGetDisabledDefaultHandlers(eventName: string): EventCallback[] {
+        this.defaultHandlers.__disabled__[ eventName ] || (this.defaultHandlers.__disabled__[ eventName ] = []);
+        return this.defaultHandlers.__disabled__[ eventName ];
     }
 }
