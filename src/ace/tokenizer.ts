@@ -7,7 +7,7 @@ export type Rules = {
 
 export type Rule = {
     include?: string[]
-    token?: string,
+    token?: string | string[],
     regex?: string | RegExp,
     next?: string,
     push?: Rule[],
@@ -45,7 +45,15 @@ export class Tokenizer {
                 }
                 const matchCount = new RegExp('(?:(' + rule.regex + ')|(.))').exec('a')!!.length;
                 if (Array.isArray(rule.token)) {
-
+                    if (rule.token.length == 1 || matchCount == 1) {
+                        rule.token = rule.token[ 0 ];
+                    } else if (matchCount - 1 != rule.token.length) {
+                        this.reportError('number of classes and regexp groups doesn\'t match', {
+                            rule: rule,
+                            groupCount: matchCount - 1
+                        });
+                        rule.token = rule.token[ 0 ];
+                    }
                 } else if (typeof rule.token == 'function' && !rule.onMatch) {
                     if (matchCount > 1)
                         rule.onMatch = this.applyToken;
@@ -54,5 +62,9 @@ export class Tokenizer {
                 }
             }
         }
+    }
+
+    reportError(message: string, fb: any) {
+
     }
 }
