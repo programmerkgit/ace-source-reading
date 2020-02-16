@@ -100,6 +100,9 @@ export class EditSession extends EventEmitter {
 
     private worker: any;
 
+    getMode() {
+        return this.mode;
+    }
 
     /**
      * Returns selection object.

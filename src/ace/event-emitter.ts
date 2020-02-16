@@ -6,6 +6,12 @@ type DefaultHandlers = { __disabled__: { [key: string]: EventCallback[] } } & { 
 
 /** Class representing a point. */
 export class EventEmitter {
+
+    /**
+     *
+     * key: event name value is eventlistners
+     *
+     * */
     private eventRegistry: { [key: string]: EventCallback[] } = {};
     private defaultHandlers: DefaultHandlers = {__disabled__: {}} as DefaultHandlers;
 
@@ -51,10 +57,10 @@ export class EventEmitter {
      * add event listner
      * @function
      * @param {string} eventName - name of event to listen to
-     * @param {EventCallback} callback - function which is called when emitted event of eventName
+     * @param {EventCallback} listener - function which is called when emitted event of eventName
      * */
-    addEventListener(eventName: string, callback: EventCallback): EventEmitter {
-        this.safeGetListeners(eventName).push(callback);
+    addEventListener(eventName: string, listener: EventCallback): EventEmitter {
+        this.safeGetListeners(eventName).push(listener);
         return this;
     }
 
@@ -83,8 +89,8 @@ export class EventEmitter {
         return this.removeListener(eventName, callback);
     }
 
-    // event名を渡したらevent名のListenerを全て削除
-    // event名を渡さない場合は全てのListenerを削除
+    // if eventName passed remove listeners of event name
+    // otherwise remove all event listeners
     removeAllListener(eventName?: string): EventEmitter {
         if (eventName === null || eventName === undefined) {
             this.eventRegistry = {};
