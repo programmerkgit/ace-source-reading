@@ -1,5 +1,6 @@
 import { EventEmitter } from './event-emitter';
 import { Range } from './range';
+import { applyDelta } from './apply-delta';
 
 export type Point = {
     row: number,
@@ -7,11 +8,8 @@ export type Point = {
 }
 
 export type Delta = {
-    action: 'insert',
+    action: 'insert' | 'remove',
     lines: string[],
-    start: Point,
-} | {
-    action: 'remove',
     start: Point,
     end: Point
 }
@@ -119,19 +117,24 @@ export class Document extends EventEmitter {
      * Applies `delta` to the document.
      * @param delta - A delta object (can include "insert" and "remove" actions)
      **/
-    applyDelta(delta: Delta, doNotValidate: any) {
-        var isInsert = delta.action == 'insert';
+    applyDelta(delta: Delta, doNotValidate: boolean) {
         // An empty range is a NOOP.
-        if (isInsert ? delta.lines.length <= 1 && !delta.lines[ 0 ] : !Range.comparePoints(delta.start, delta.end)) {
+        if (delta.action === 'insert' && delta.lines.length <= 1 && !delta.lines[ 0 ]) {
             return;
         }
-
-        if (isInsert && delta.lines.length > 20000) {
-            this.splitAndapplyLargeDelta(delta, 20000);
-        } else {
-            applyDelta(this.$lines, delta, doNotValidate);
-            this.signal('change', delta);
+        if (delta.action === 'remove' && !Range.isSamePoint(delta.start, delta.end)) {
+            return;
         }
+        if (delta.action === 'insert' && delta.lines.length > 20000) {
+            this.splitAndapplyLargeDelta(delta, 20000);
+            return;
+        }
+        applyDelta(this.lines, delta, doNotValidate);
+        this.signal('change', delta);
+    }
+
+    splitAndapplyLargeDelta(delta: Delta, n: number) {
+
     }
 
 

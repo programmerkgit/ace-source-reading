@@ -20,6 +20,28 @@ export class Range {
         return new Range(start.row, start.column, end.row, end.column);
     }
 
+    /* a is less, -1 : a is grater, 1 */
+    static comparePoints(a: Point, b: Point): CompareResult {
+        if (a.row < b.row) {
+            return -1;
+        } else if (a.row === b.row) {
+            if (a.column < b.column) {
+                return -1;
+            } else if (a.column === b.column) {
+                return 0;
+            } else {
+                return 1;
+            }
+        } else {
+            return 1;
+        }
+    }
+
+    /* same point */
+    static isSamePoint(a: Point, b: Point): boolean {
+        return a.column == b.column && a.row === b.row;
+    }
+
     isEqual(range: Range): boolean {
         return this.start.column === range.start.column &&
             this.start.row === range.start.row &&
@@ -28,8 +50,8 @@ export class Range {
     }
 
     toString(): string {
-        return ("Range: [" + this.start.row + "/" + this.start.column +
-            "] -> [" + this.end.row + "/" + this.end.column + "]");
+        return ('Range: [' + this.start.row + '/' + this.start.column +
+            '] -> [' + this.end.row + '/' + this.end.column + ']');
     };
 
     isEnd(column: number, row: number): boolean {
@@ -46,7 +68,7 @@ export class Range {
     setStart(row: number, column: number): void
 
     setStart(rowOrPoint: Point | number, column?: number) {
-        if (typeof rowOrPoint === "number") {
+        if (typeof rowOrPoint === 'number') {
             this.start.row = rowOrPoint;
             this.start.column = column!!;
         } else {
@@ -60,7 +82,7 @@ export class Range {
     setEnd(row: number, column: number): void
 
     setEnd(rowOrPoint: Point | number, column?: number) {
-        if (typeof rowOrPoint === "number") {
+        if (typeof rowOrPoint === 'number') {
             this.end.row = rowOrPoint;
             this.end.column = column!!;
         } else {
@@ -160,8 +182,8 @@ export class Range {
     }
 
     /**
-    * return cloned Range
-    * */
+     * return cloned Range
+     * */
     clone(): Range {
         return Range.fromPoints(this.start, this.end);
     }

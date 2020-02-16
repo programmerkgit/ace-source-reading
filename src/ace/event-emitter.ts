@@ -1,7 +1,7 @@
 /* https://jsdoc.app/index.html#block-tags */
 
 export type Event = any
-export type EventCallback = (e?: Event) => any
+export type EventCallback = (e: Event) => any
 type DefaultHandlers = { __disabled__: { [ key: string ]: EventCallback[] } } & { [ key: string ]: EventCallback }
 
 /** Class representing a point. */
@@ -26,7 +26,7 @@ export class EventEmitter {
      * @param{string} eventName - イベントの名前
      * @param{EventCallback} callback - 実行されるハンドラ
      * */
-    setDefaultHandlers(eventName: string, callback: EventCallback): EventEmitter {
+    setDefaultHandlers(eventName: string, callback: EventCallback): this {
         const handlers = this.defaultHandlers;
         if (handlers[ eventName ]) {
             /* 元々のデフォルトハンドラーをDisableに格納 */
@@ -49,7 +49,7 @@ export class EventEmitter {
      * @param {string} eventName - name of event to listen to
      * @param {EventCallback} listener - function which is called when emitted event of eventName
      * */
-    addEventListener(eventName: string, listener: EventCallback): EventEmitter {
+    addEventListener(eventName: string, listener: EventCallback): this {
         this.safeGetListeners(eventName).push(listener);
         return this;
     }
@@ -57,7 +57,7 @@ export class EventEmitter {
     /**
      * alias for addEventListner
      * */
-    on(eventName: string, callback: EventCallback): EventEmitter {
+    on(eventName: string, callback: EventCallback): this {
         return this.addEventListener(eventName, callback);
     }
 
@@ -80,7 +80,7 @@ export class EventEmitter {
     }
 
     // otherwise remove all event listeners
-    removeAllListener(eventName?: string): EventEmitter {
+    removeAllListener(eventName?: string): this {
         if (eventName === null || eventName === undefined) {
             this.eventRegistry = {};
         } else {
@@ -89,7 +89,7 @@ export class EventEmitter {
         return this;
     }
 
-    emit(eventName: string, e: {}): EventEmitter {
+    emit(eventName: string, e: {}): this {
         (this.safeGetListeners(eventName)).forEach(callback => {
             callback(e);
         });
@@ -99,8 +99,7 @@ export class EventEmitter {
     // if eventName passed remove listeners of event name
 
     signal(eventName: string, e?: Event) {
-        var listeners = this.safeGetListeners(eventName);
-        listeners = listeners.slice();
+        const listeners = this.safeGetListeners(eventName);
         listeners.forEach(listener => {
             listener(e);
         });

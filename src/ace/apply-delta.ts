@@ -1,7 +1,7 @@
 import { Delta, Point } from './document';
 
 
-export const applyDelta = function (docLines: string[], delta: Delta, doNotValidate: string): void {
+export const applyDelta = function (docLines: string[], delta: Delta, doNotValidate: boolean): void {
     switch (delta.action) {
         case 'insert':
             insertDelta(docLines, delta.start, delta.lines,);
